@@ -1,6 +1,6 @@
 FROM php:8.2-apache-bookworm
 
-LABEL maintainer="Yann Le Doaré <services@linuxconsole.org>"
+LABEL maintainer="Zepintel SARL"
 
 ENV PHP_INI_DATE_TIMEZONE 'UTC'
 ENV PHP_INI_MEMORY_LIMIT 256M
