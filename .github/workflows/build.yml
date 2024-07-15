@@ -24,7 +24,7 @@ jobs:
             push: true
             tags: developersongyam/dolibarr:21
         
-        # - name: Deploy using ssh
+        # - name: Deploy using ssh 
         #   uses: appleboy/ssh-action@master
         #   with:
         #     host: ${{ secrets.SSH_HOST }}
