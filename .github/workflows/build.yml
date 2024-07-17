@@ -32,7 +32,8 @@ jobs:
             key: ${{ secrets.SSH_PRIVATE_KEY }}
             port: 22
             script: |
-              cd dockefiles
+              cd
+              cd dockerfiles
               source ~/.init.sh
               docker compose stop web
               docker compose rm -f web
