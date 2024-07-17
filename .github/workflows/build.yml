@@ -21,27 +21,33 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          push: false
+          load: true
           tags: dolibarr:21
-          outputs: type=docker,dest=/tmp/dolibarr-image.tar
-      - name: Check if Docker image tar exists
-        run: |
-          ls -l /tmp/dolibarr-image.tar
-          echo "Size of dolibarr-image.tar:"
-          du -h /tmp/dolibarr-image.tar
 
-      - name: Copy Docker image to server
+      - name: Save Docker image
+        run: docker save dolibarr:21 | gzip > /tmp/dolibarr-image.tar.gz
+
+      - name: Deploy using ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            mkdir -p /tmp/dolibarr-deploy
+      
+      - name: Transfer Docker image
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-          source: "/tmp/dolibarr-image.tar"
-          target: "/tmp/"
-          strip_components: 1
-
-      - name: Deploy using ssh
+          source: "/tmp/dolibarr-image.tar.gz"
+          target: "/tmp/dolibarr-deploy"
+            
+      - name: Load and run Docker image
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -53,6 +59,6 @@ jobs:
             source ~/.init.sh
             docker compose stop web
             docker compose rm -f web
-            docker load < /tmp/dolibarr-image.tar
+            gunzip -c /tmp/dolibarr-deploy/dolibarr-image.tar.gz | docker load
             docker compose up -d web
-            rm /tmp/dolibarr-image.tar
+            rm -rf /tmp/dolibarr-deploy
