@@ -16,11 +16,12 @@ services:
         image: mariadb:latest
         environment:
             MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PWD
-            MYSQL_DATABASE: "dolibarr-prod"
+            MYSQL_DATABASE: "dolibar-zep-prod"
 
     web:
-        container_name: dolibarr-web-dev
-        build: .
+        container_name: dolibarr-web
+        image: developersongyam/dolibarr:21
+        # build: .
 
         volumes:
          - ../../htdocs:/var/www/html/

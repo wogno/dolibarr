@@ -24,18 +24,17 @@ jobs:
             push: true
             tags: developersongyam/dolibarr:21
         
-        # - name: Deploy using ssh 
-        #   uses: appleboy/ssh-action@master
-        #   with:
-        #     host: ${{ secrets.SSH_HOST }}
-        #     username: ${{ secrets.SSH_USERNAME }}
-        #     key: ${{ secrets.SSH_PRIVATE_KEY }}
-        #     port: 22
-        #     script: |
-        #       source ~/.bashrc
-        #       cd dockefiles
-
-        #       docker compose stop appweb
-        #       docker compose rm -f appweb
-        #       docker rmi -f developersongyam/songyam-app-web:0.0.1
-        #       docker compose up -d appweb
+        - name: Deploy using ssh 
+          uses: appleboy/ssh-action@master
+          with:
+            host: ${{ secrets.SSH_HOST }}
+            username: ${{ secrets.SSH_USERNAME }}
+            key: ${{ secrets.SSH_PRIVATE_KEY }}
+            port: 22
+            script: |
+              cd dockefiles
+              source ~/.init.sh
+              docker compose stop web
+              docker compose rm -f web
+              docker rmi -f developersongyam/dolibarr:21
+              docker compose up -d web
