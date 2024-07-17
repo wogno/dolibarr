@@ -33,7 +33,7 @@ services:
             WWW_USER_ID: 1000
             WWW_GROUP_ID: 1000
             DOLI_ROOT_PASSWORD: $MYSQL_ROOT_PWD
-            DOLI_DATABASE: "dolibarr-prod"
+            DOLI_DATABASE: "dolibar-zep-prod"
             DOLI_DB_SERVER: "mariadb"
         ports:
             - "8080:80"
