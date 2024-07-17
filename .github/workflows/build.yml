@@ -25,28 +25,19 @@ jobs:
           tags: dolibarr:21
 
       - name: Save Docker image
-        run: docker save dolibarr:21 | gzip > /tmp/dolibarr-image.tar.gz
+        run: |
+          mkdir -p ./deploy
+          docker save dolibarr:21 | gzip > ./deploy/dolibarr-image.tar.gz
 
-      - name: Deploy using ssh
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          script: |
-            mkdir -p /tmp/dolibarr-deploy
-      
-      - name: Transfer Docker image
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          source: "/tmp/dolibarr-image.tar.gz"
-          target: "/tmp/dolibarr-deploy"
-            
+      - name: Deploy to Server
+        uses: easingthemes/ssh-deploy@v4.1.8
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.SSH_HOST }}
+          REMOTE_USER: ${{ secrets.SSH_USERNAME }}
+          SOURCE: "deploy/"
+          TARGET: "/tmp/dolibarr-deploy"
+
       - name: Load and run Docker image
         uses: appleboy/ssh-action@master
         with:
@@ -55,7 +46,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            cd dockerfiles
+            cd dockefiles
             source ~/.init.sh
             docker compose stop web
             docker compose rm -f web
