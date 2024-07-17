@@ -46,10 +46,12 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            cd dockefiles
+            cd
+            cd dockerfiles
             source ~/.init.sh
             docker compose stop web
             docker compose rm -f web
             gunzip -c /tmp/dolibarr-deploy/dolibarr-image.tar.gz | docker load
             docker compose up -d web
+            ls -l /tmp/dolibarr-deploy
             rm -rf /tmp/dolibarr-deploy
