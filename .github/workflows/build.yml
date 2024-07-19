@@ -22,12 +22,12 @@ jobs:
         with:
           context: .
           load: true
-          tags: dolibarr:21
+          tags: dolibarr
 
       - name: Save Docker image
         run: |
           mkdir -p ./deploy
-          docker save dolibarr:21 | gzip > ./deploy/dolibarr-image.tar.gz
+          docker save dolibarr | gzip > ./deploy/dolibarr-image.tar.gz
 
       - name: Deploy to Server
         uses: easingthemes/ssh-deploy@v4.1.8
