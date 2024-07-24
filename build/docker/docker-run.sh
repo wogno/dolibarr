@@ -21,6 +21,12 @@ date.timezone = ${PHP_INI_DATE_TIMEZONE:-UTC}
 memory_limit = ${PHP_INI_MEMORY_LIMIT:-256M}
 EOF
 
-cp /var/www/html/install/install.forced.docker.php /var/www/html/install/install.forced.php
+# display current directory
+echo "[docker-run] => Current directory"
+pwd
 
+# cp /var/www/html/install/install.foirced.docker.php /var/www/html/install/install.forced.php
+/Applications/MAMP/htdocs/dolibarr/htdocs/install/install.forced.docker.php
+
+cp htdocs/install/install.forced.docker.php /var/www/html/install/install.forced.php
 exec apache2-foreground
