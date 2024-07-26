@@ -49,10 +49,10 @@ jobs:
             cd
             cd dockerfiles
             source ~/.init.sh
-            docker compose stop web
-            docker compose rm -f web
+            docker compose stop dolibarr
+            docker compose rm -f dolibarr
             gunzip -c /tmp/dolibarr-deploy/dolibarr-image.tar.gz | docker load
-            docker compose up -d web
+            docker compose up -d
             ls -l /tmp/dolibarr-deploy
             rm -rf /tmp/dolibarr-deploy
             
