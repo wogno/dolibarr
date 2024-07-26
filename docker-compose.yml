@@ -21,7 +21,7 @@ services:
       DOLI_ADMIN_LOGIN: "admin"
       DOLI_ADMIN_PASSWORD: "dolibarr"
     ports:
-      - 80:80
+      - 8888:80
     volumes:
       - dolibarr-docs:/var/www/documents
       - dolibarr-custom:/var/www/html/custom

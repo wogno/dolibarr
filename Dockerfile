@@ -4,7 +4,7 @@ FROM ${ARCH}php:8.2-apache-buster
 
 LABEL maintainer="Garcia MICHEL <garcia@soamichel.fr>"
 
-ENV DOLI_VERSION 19.0.2
+ENV DOLI_VERSION 20.0.0
 ENV DOLI_INSTALL_AUTO 1
 ENV DOLI_PROD 1
 
@@ -83,13 +83,15 @@ RUN apt-get update -y \
 #     mkdir -p /var/www/html/custom && \
 #     chown -R www-data:www-data /var/www
 
-RUN ./htdocs/* /var/www/html/ && \
+RUN git clone https://github.com/wogno/dolibarr.git && \
+    cp -r dolibarr/htdocs/* /var/www/html/ && \
     ln -s /var/www/html /var/www/htdocs && \
-    cp -r scripts /var/www/ && \
+    cp -r dolibarr/scripts /var/www/ && \
     rm -rf /tmp/* && \
     mkdir -p /var/www/documents && \
     mkdir -p /var/www/html/custom && \
     chown -R www-data:www-data /var/www
+
 
 EXPOSE 80
 VOLUME /var/www/documents
