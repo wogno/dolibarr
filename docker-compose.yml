@@ -1,39 +1,45 @@
-# This docker-compose.yml file is used to build and test quickly
-# a specific version of Dolibarr
-#
-# Before build, define the variable DOLI_VERSION as following:
-# $ export DOLI_VERSION=4.0.4
-# And then, you can run :
-# $ docker-compose up
-#
-# More information about Docker-compose : https://docs.docker.com/compose/
+networks:
+  internal-pod:
+    internal: true
+  external-pod:
+    internal: false
 
-version: "3"
+volumes:
+  dolibarr-custom:
+  dolibarr-docs:
+  mysql-data:
 
 services:
-    mariadb:
-        container_name: dolibarr-mariadb-dev
-        image: mariadb:latest
-        environment:
-            MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PWD
-            MYSQL_DATABASE: "dolibar-zep-prod"
+  dolibarr:
+    image: dolibarr
+    environment:
+      DOLI_DB_HOST: "mysql"
+      DOLI_DB_HOST_PORT: "3306"
+      DOLI_DB_USER: "dolibarr"
+      DOLI_DB_PASSWORD: "dolipass"
+      DOLI_DB_NAME: "dolibarr"
+      DOLI_ADMIN_LOGIN: "admin"
+      DOLI_ADMIN_PASSWORD: "dolibarr"
+    ports:
+      - 80:80
+    volumes:
+      - dolibarr-docs:/var/www/documents
+      - dolibarr-custom:/var/www/html/custom
+    networks:
+      - internal-pod
+      - external-pod
 
-    web:
-        container_name: dolibarr-web
-        image: developersongyam/dolibarr:21
-        # build: .
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: "dolibarr"
+      MYSQL_USER: "dolibarr"
+      MYSQL_PASSWORD: "dolipass"
+      MYSQL_ROOT_PASSWORD: "mysupersupersecretpasswordforrootuser"
 
-        volumes:
-         - ../../htdocs:/var/www/html/
-         - ../../documents:/var/www/html/documents
-
-        depends_on:
-            - mariadb
-        environment:
-            WWW_USER_ID: 1000
-            WWW_GROUP_ID: 1000
-            DOLI_ROOT_PASSWORD: $MYSQL_ROOT_PWD
-            DOLI_DATABASE: "dolibar-zep-prod"
-            DOLI_DB_SERVER: "mariadb"
-        ports:
-            - "8080:80"
+    ports:
+      - 3312:3306
+    volumes:
+      - mysql-data:/var/lib/mysql3
+    networks:
+      - internal-pod
