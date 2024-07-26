@@ -83,8 +83,11 @@ RUN apt-get update -y \
 #     mkdir -p /var/www/html/custom && \
 #     chown -R www-data:www-data /var/www
 
-RUN git clone https://github.com/wogno/dolibarr.git && \
-    cp -r dolibarr/htdocs/* /var/www/html/ && \
+RUN git clone https://github.com/wogno/dolibarr.git --branch release --depth=1
+
+RUN ls -l
+
+RUN cp -r dolibarr/htdocs/* /var/www/html/ && \
     ln -s /var/www/html /var/www/htdocs && \
     cp -r dolibarr/scripts /var/www/ && \
     rm -rf /tmp/* && \
